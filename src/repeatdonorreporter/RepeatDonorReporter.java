@@ -6,15 +6,13 @@ public class RepeatDonorReporter {
     Map<String, Integer> minYearDonated; // key would be name+zipcode
     Map<String, RepeatDonorsGroup> repeatedDonorsGroups; // key would be receiptID+ZipCode+Year
     PercentileCalculator percentileCalculator;
-    int desiredPercentile;
-    float precision;
+    float desiredPercentile;
 
-    public RepeatDonorReporter(int thePercentile, float thePrecision){
+    public RepeatDonorReporter(float thePercentile){
         minYearDonated = new HashMap<>();
         repeatedDonorsGroups = new HashMap<>();
         percentileCalculator = new NearestRankPercentile();
         desiredPercentile = thePercentile;
-        precision = thePrecision;
     }
 
     public boolean addNewDonation(Record theRecord) throws ArithmeticException{

@@ -1,6 +1,7 @@
 package repeatdonorreporter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RepeatDonorsGroup {
@@ -12,23 +13,12 @@ public class RepeatDonorsGroup {
         total = 0;
     }
     public void addOrPut(float newAmount) throws ArithmeticException{
-        if(amounts.size()==0)
-            amounts.add(newAmount);
+        int indexOfInsertion = Collections.binarySearch(amounts, newAmount);
+        if(indexOfInsertion >=0)
+            amounts.add(indexOfInsertion, newAmount);
         else
-        // insertion sort, O(n)
-            for (int i = 0; i <= amounts.size(); i++) {
-                //add to list if greater than all
-                if(i == amounts.size()) {
-                    amounts.add(newAmount);
-                    break;
-                }
-                else if(newAmount < amounts.get(i)) {
-                    amounts.add(i, newAmount);
-                    break;
-                }
-            }
+            amounts.add(-(indexOfInsertion+1), newAmount);
 
         total += newAmount;
-
     }
 }

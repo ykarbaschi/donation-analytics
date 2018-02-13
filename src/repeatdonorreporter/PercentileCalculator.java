@@ -1,5 +1,5 @@
 package repeatdonorreporter;
 
 public interface PercentileCalculator {
-    int calcPercentile(int percentile, int listSize);
+    int calcPercentile(float percentile, int listSize);
 }

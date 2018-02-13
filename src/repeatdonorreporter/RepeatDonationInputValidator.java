@@ -20,7 +20,6 @@ public class RepeatDonationInputValidator implements InputValidator {
     static final String alphaNumericREGEX = "^[a-zA-Z0-9]*$";
     static final String alphaNumericREGEXWithSpace = "^[a-zA-Z0-9,'\\.\\s]*$";
     static final int LEAST_POSSIBLE_YEAR_AT_ALL = 1975;
-    static final int LAST_POSSIBLE_YEAR_AMT_500 = 1988;
     static final int CUR_YEAR = 2018;
     static final int CUR_Month = 2;
     static final int CMTE_ID_INDEX = 0;

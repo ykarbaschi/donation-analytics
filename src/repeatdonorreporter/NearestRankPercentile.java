@@ -2,8 +2,8 @@ package repeatdonorreporter;
 
 public class NearestRankPercentile implements PercentileCalculator {
     @Override
-    public int calcPercentile(int percentile, int listSize) {
+    public int calcPercentile(float percentile, int listSize) {
         //for rounding up without overflow worry
-        return (percentile*listSize) / 100 + ((percentile*listSize) % 100 == 0 ? 0:1);
+        return (int)(percentile*listSize) / 100 + ((percentile*listSize) % 100 == 0 ? 0:1);
     }
 }

@@ -4,21 +4,21 @@ import java.io.*;
 
 public class RepeatDonorDriver {
     public static void main(String[] args){
-        int percentile = 0;
+        float percentile = 0;
         String percentileString;
         String comingLine;
 
         try{
             BufferedReader br = new BufferedReader(new FileReader(args[1]));
             if((percentileString = br.readLine())!= null)
-                percentile = Integer.valueOf(percentileString);
+                percentile = Float.valueOf(percentileString);
 
         } catch (Exception exception){
             System.out.println("Percentile input file cannot be found");
         }
 
         InputValidator repeatDonationInputValidator = new RepeatDonationInputValidator();
-        RepeatDonorReporter repeatDonorReporter = new RepeatDonorReporter(percentile, RepeatDonationInputValidator.PRECISION);
+        RepeatDonorReporter repeatDonorReporter = new RepeatDonorReporter(percentile);
         ReportStreamer fileReportStreamer = new FileReportStreamer(args[2]);
 
         try {

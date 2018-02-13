@@ -12,7 +12,7 @@ public class RepeatDonorReporterTest {
     RepeatDonorReporter repeatDonorReporter;
 
     @Before
-    public void setup(){repeatDonorReporter = new RepeatDonorReporter(30, 0.01f);}
+    public void setup(){repeatDonorReporter = new RepeatDonorReporter(30);}
 
     @Test
     public void checkIfLaterDonationUpdateYearCorrectly(){
