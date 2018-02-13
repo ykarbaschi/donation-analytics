@@ -26,6 +26,15 @@ public class FileReportStreamer implements ReportStreamer {
     }
 
     @Override
+    public void flushBuffer(){
+        try {
+            bufferedWriter.flush();
+        }catch (Exception ex){
+            System.out.println("There is a problem flushing buffer writer");
+        }
+    }
+
+    @Override
     public void stopEmitting(){
         try {
             bufferedWriter.flush();

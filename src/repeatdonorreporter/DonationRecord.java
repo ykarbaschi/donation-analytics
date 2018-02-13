@@ -3,20 +3,19 @@ package repeatdonorreporter;
 public class DonationRecord extends Record{
     private String receiptID,
             zipcode,
-            name,
-            transactionDate;
-    private double transactionAmount;
-    private boolean repeated;
+            name;
+    private int transactionYear;
+    private float transactionAmount;
 
     private boolean valid;
 
     public DonationRecord(){}
     public DonationRecord(String theReceiptId, String theZipcode, String theName,
-                          String theYear, int theAmount){
+                          int theYear, float theAmount){
         receiptID = theReceiptId;
         zipcode = theZipcode;
         name = theName;
-        transactionDate = theYear;
+        transactionYear = theYear;
         transactionAmount = theAmount;
         valid = true;
     }
@@ -47,23 +46,15 @@ public class DonationRecord extends Record{
         this.name = name;
     }
 
-    public String getTransactionDate(){return transactionDate;}
+    public int getTransactionYear(){return transactionYear;}
 
-    public void setTransactionDate(String transactionDate) {
-        this.transactionDate = transactionDate;
+    public void setTransactionYear(int transactionYear) {
+        this.transactionYear = transactionYear;
     }
 
-    public double getTransactionAmount(){return transactionAmount;}
+    public float getTransactionAmount(){return transactionAmount;}
 
-    public void setTransactionAmount(double transactionAmount) {
+    public void setTransactionAmount(float transactionAmount) {
         this.transactionAmount = transactionAmount;
-    }
-
-    public boolean isRepeated() {
-        return repeated;
-    }
-
-    public void setRepeated(boolean repeated) {
-        this.repeated = repeated;
     }
 }

@@ -1,112 +1,80 @@
 package repeatdonorreporter;
 
-import java.math.BigInteger;
 import java.util.*;
 
 public class RepeatDonorReporter {
-    Map<String, DonationRecord> donations;
-    Map<Integer, Map<String, Integer>> yearlyRepeatedDonations;
+    Map<String, Integer> maxYearDonated; // key would be name+zipcode
+    Map<String, RepeatDonorsGroup> repeatedDonorsGroups; // key would be receiptID+ZipCode+Year
     PercentileCalculator percentileCalculator;
-    int theDesiredPercentile;
+    int desiredPercentile;
+    float precision;
 
-    public RepeatDonorReporter(int percentile){
-        donations = new HashMap<>();
-        yearlyRepeatedDonations = new HashMap<>();
+    public RepeatDonorReporter(int thePercentile, float thePrecision){
+        maxYearDonated = new HashMap<>();
+        repeatedDonorsGroups = new HashMap<>();
         percentileCalculator = new NearestRankPercentile();
-        theDesiredPercentile = percentile;
+        desiredPercentile = thePercentile;
+        precision = thePrecision;
     }
 
-    public boolean addNewDonation(Record theRecord){
+    public boolean addNewDonation(Record theRecord) throws ArithmeticException{
         // can be improved, casting is smelling to me~~
         DonationRecord theDonationRecord = (DonationRecord)theRecord;
 
         String nameAndZip = theDonationRecord.getName() + theDonationRecord.getZipcode();
-        if(donations.containsKey(nameAndZip)){
-            DonationRecord record = donations.get(nameAndZip);
-            if(Integer.valueOf(theDonationRecord.getTransactionDate()) >=
-                     Integer.valueOf(record.getTransactionDate())){
-                record.setTransactionDate(theDonationRecord.getTransactionDate());
-                record.setTransactionAmount(theDonationRecord.getTransactionAmount());
-                record.setRepeated(true);
-                return true;
-            }else
-                return false;
+
+        // new donors is repeated and new record is after his prior donation
+        if(maxYearDonated.containsKey(nameAndZip) &&
+                maxYearDonated.get(nameAndZip) < theDonationRecord.getTransactionYear()){
+
+            //update with recent year
+            maxYearDonated.put(nameAndZip, theDonationRecord.getTransactionYear());
+
+            //make a key for repeated Donor Map
+            String receiptZipYear = theDonationRecord.getReceiptID() +
+                    theDonationRecord.getZipcode() +
+                    String.valueOf(theDonationRecord.getTransactionYear());
+
+            if(repeatedDonorsGroups.containsKey(receiptZipYear)){
+
+                repeatedDonorsGroups.get(receiptZipYear).addOrPut(theDonationRecord.getTransactionAmount());
+            }else{
+
+                RepeatDonorsGroup newGroup = new RepeatDonorsGroup(precision);
+                newGroup.addOrPut(theDonationRecord.getTransactionAmount());
+                repeatedDonorsGroups.put(receiptZipYear, newGroup);
+            }
+
+            return true;
 
         }else{
-            donations.put(nameAndZip, theDonationRecord);
+            maxYearDonated.put(nameAndZip, theDonationRecord.getTransactionYear());
             return false;
         }
     }
 
-    public List<DonationRecord> getRepeatedDonor(DonationRecord theRecord) {
-        //in repeatedDonor fin all receipt in this year. then emit number and total and percentile.
-        List<DonationRecord> res = new ArrayList<>();
-        //can be replaced with stream call
-        for(DonationRecord record:donations.values()){
-            if(extractYear(record.getTransactionDate()) == extractYear(theRecord.getTransactionDate()) &&
-                record.getZipcode().equals(theRecord.getZipcode()) &&
-                record.isRepeated())
-
-                res.add(record);
-        }
-
-        return res;
-    }
-
-    private int extractYear(String date){
-        return Integer.valueOf(date.substring(date.length()-4));
-    }
-
-    public Double getPercentileOfRepeatedDonor(int year, List<DonationRecord> repeatedDonors){
-
-        //****** Room for improvement, faster sorting map entries
-
-        int indexForSorted = percentileCalculator.getPercentile(theDesiredPercentile, repeatedDonors.size());
-        List<Double> list = new ArrayList<>();
-        for(DonationRecord record:repeatedDonors)
-            list.add(record.getTransactionAmount());
-
-        Collections.sort(list);
-        return list.get(indexForSorted-1);
-    }
-
-    public double getTotalAmount(List<DonationRecord> repeatedDonor) {
-        double res = 0;
-        for(DonationRecord record:repeatedDonor)
-            res += record.getTransactionAmount();
-
-        return res;
-    }
-
     public String emitRepeatedDonorReport(Record theRecord) {
-        //******* DEFENITLY SHOULD BE IMPROVED
 
         DonationRecord donationRecord = (DonationRecord)theRecord;
-        List<DonationRecord> repeated = getRepeatedDonor(donationRecord);
+        String receiptZipYear = donationRecord.getReceiptID() +
+                donationRecord.getZipcode() +
+                String.valueOf(donationRecord.getTransactionYear());
+
+        RepeatDonorsGroup repeatedList = repeatedDonorsGroups.get(receiptZipYear);
+
+        int indexForSorted = percentileCalculator.calcPercentile(desiredPercentile, repeatedList.amounts.size());
+        long thePercentile = generateRoundedAmount(repeatedList.amounts.get(indexForSorted-1));
 
         return donationRecord.getReceiptID() + "|" +
                 donationRecord.getZipcode() + "|" +
-                extractYear(donationRecord.getTransactionDate()) + "|" +
-
-                generateCorrectAmount(getPercentileOfRepeatedDonor(
-                extractYear(donationRecord.getTransactionDate()), repeated)) + "|" +
-
-                generateCorrectAmount(getTotalAmount(repeated)) + "|" +
-                repeated.size() + "\n";
+                donationRecord.getTransactionYear() + "|" +
+                thePercentile + "|" +
+                generateRoundedAmount(repeatedList.total) + "|" +
+                repeatedList.amounts.size() + "\n";
     }
 
-    public String generateCorrectAmount(Double amount){
-        double fraction = amount % 1;
-        if(fraction >= 0.009d)
-            return String.format("%.2f", amount);
-        else
-            return String.format("%.0f", amount);
-    }
+    public long generateRoundedAmount(Float amount){
 
-//    public long roundPercentile(Double amount){
-//        Double num = amount % 1;
-//        if(num > 0.5)
-//            return Long.+1;
-//
-//    }
+        return (long)(amount / 1 + (amount%1 > 0.5f ? 1:0));
+    }
 }
