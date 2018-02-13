@@ -22,7 +22,7 @@ I have used a Hashmap with key as name + zipcode and value as smallest year seen
 To calculate running percentile, I have the idea of using a minHeap and maxHeap given from famous problem of median of a stream. The next percentile always would be at the root of minHeap. The runtime woulde be O(2*logn) for insertion and O(1) for getting the percentile. However, I couldn't get a chance to implement it carefully. Instead I implmented a sorted list by adding new elements in correct position using binary search. It has O(logn + n) insertion time and O(1) to get percentile.
 
 ## Software Design
-I had a minimalistic view to only store what is really needed for this special report. However, if any new report needed it can be written and plugged in whitout touching the existing code (Open Closed Principle).
+I had a minimalistic view to only store what is really needed for this special report. I rigorously validate incoming data to make sure for better performance and security. I followed exactly the input standards from FEC table. For example, I check length of incoming input(as a  char[] not more than 577 and filter any invalid field using different accurate regex strings. However, if any new report needed differnt validator can be written and plugged in whitout touching the existing code (Open Closed Principle).
 
 (main class) ```RepeatDonorDriver``` needs (interface)```InputValidator``` and ```RepeatDonorReporter``` and (interface)```ReportStreamer```.
 ```RepeatDonationInputValidator``` implmented ```inputValidator``` with details from assignment defenition and FEC tables which validates incoming data and extract needed field with proper formatting.
