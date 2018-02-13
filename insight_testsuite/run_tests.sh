@@ -80,10 +80,10 @@ function run_all_tests {
   TEST_FOLDERS=$(ls ${GRADER_ROOT}/tests)
   NUM_TESTS=$(($(echo $(echo ${TEST_FOLDERS} | wc -w))))
   PASS_CNT=0
+	
 
   # Loop through all tests
   for test_folder in ${TEST_FOLDERS}; do
-
     setup_testing_input_output
 
     cd ${GRADER_ROOT}/temp

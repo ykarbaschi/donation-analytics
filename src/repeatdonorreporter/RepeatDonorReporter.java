@@ -3,14 +3,14 @@ package repeatdonorreporter;
 import java.util.*;
 
 public class RepeatDonorReporter {
-    Map<String, Integer> maxYearDonated; // key would be name+zipcode
+    Map<String, Integer> minYearDonated; // key would be name+zipcode
     Map<String, RepeatDonorsGroup> repeatedDonorsGroups; // key would be receiptID+ZipCode+Year
     PercentileCalculator percentileCalculator;
     int desiredPercentile;
     float precision;
 
     public RepeatDonorReporter(int thePercentile, float thePrecision){
-        maxYearDonated = new HashMap<>();
+        minYearDonated = new HashMap<>();
         repeatedDonorsGroups = new HashMap<>();
         percentileCalculator = new NearestRankPercentile();
         desiredPercentile = thePercentile;
@@ -24,11 +24,8 @@ public class RepeatDonorReporter {
         String nameAndZip = theDonationRecord.getName() + theDonationRecord.getZipcode();
 
         // new donors is repeated and new record is after his prior donation
-        if(maxYearDonated.containsKey(nameAndZip) &&
-                maxYearDonated.get(nameAndZip) < theDonationRecord.getTransactionYear()){
-
-            //update with recent year
-            maxYearDonated.put(nameAndZip, theDonationRecord.getTransactionYear());
+        if(minYearDonated.containsKey(nameAndZip) &&
+                minYearDonated.get(nameAndZip) < theDonationRecord.getTransactionYear()){
 
             //make a key for repeated Donor Map
             String receiptZipYear = theDonationRecord.getReceiptID() +
@@ -40,7 +37,7 @@ public class RepeatDonorReporter {
                 repeatedDonorsGroups.get(receiptZipYear).addOrPut(theDonationRecord.getTransactionAmount());
             }else{
 
-                RepeatDonorsGroup newGroup = new RepeatDonorsGroup(precision);
+                RepeatDonorsGroup newGroup = new RepeatDonorsGroup();
                 newGroup.addOrPut(theDonationRecord.getTransactionAmount());
                 repeatedDonorsGroups.put(receiptZipYear, newGroup);
             }
@@ -48,7 +45,8 @@ public class RepeatDonorReporter {
             return true;
 
         }else{
-            maxYearDonated.put(nameAndZip, theDonationRecord.getTransactionYear());
+            // put if not exist before or update with least year so far
+            minYearDonated.put(nameAndZip, theDonationRecord.getTransactionYear());
             return false;
         }
     }

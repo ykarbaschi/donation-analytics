@@ -21,7 +21,7 @@ public class RepeatDonorReporterTest {
         repeatDonorReporter.addNewDonation(donationRecord);
         repeatDonorReporter.addNewDonation(donationRecord2);
 
-        assertEquals(2018, (int)repeatDonorReporter.maxYearDonated.get("Kar,Yas12345"));
+        assertEquals(2017, (int)repeatDonorReporter.minYearDonated.get("Kar,Yas12345"));
     }
 
     @Test

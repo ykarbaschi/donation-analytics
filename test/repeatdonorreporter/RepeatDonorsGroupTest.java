@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class RepeatDonorsGroupTest {
     RepeatDonorsGroup repeatDonorsGroup;
     @Before
-    public void setup(){repeatDonorsGroup = new RepeatDonorsGroup(0.01f);}
+    public void setup(){repeatDonorsGroup = new RepeatDonorsGroup();}
 
     @Test
     public void addValueToEmptyList() {

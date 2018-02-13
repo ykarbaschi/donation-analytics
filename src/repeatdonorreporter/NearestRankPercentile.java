@@ -4,6 +4,6 @@ public class NearestRankPercentile implements PercentileCalculator {
     @Override
     public int calcPercentile(int percentile, int listSize) {
         //for rounding up without overflow worry
-        return percentile*listSize / 100 + (percentile*listSize) % 100 == 0 ? 0:1;
+        return (percentile*listSize) / 100 + ((percentile*listSize) % 100 == 0 ? 0:1);
     }
 }
