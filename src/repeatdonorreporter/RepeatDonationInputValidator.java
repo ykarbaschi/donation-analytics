@@ -1,8 +1,5 @@
 package repeatdonorreporter;
 
-import com.sun.corba.se.spi.legacy.connection.LegacyServerSocketEndPointInfo;
-import com.sun.org.apache.bcel.internal.generic.FLOAD;
-
 public class RepeatDonationInputValidator implements InputValidator {
     //according to the assignment explanation and this address:
     // https://classic.fec.gov/finance/disclosure/metadata/DataDictionaryContributionsbyIndividuals.shtml
