@@ -22,6 +22,7 @@ public class RepeatDonationInputValidator implements InputValidator {
     static final int LEAST_POSSIBLE_YEAR_AT_ALL = 1975;
     static final int CUR_YEAR = 2018;
     static final int CUR_Month = 2;
+
     static final int CMTE_ID_INDEX = 0;
     static final int NAME_INDEX = 7;
     static final int DATE_INDEX = 13;

@@ -4,7 +4,10 @@ import java.util.*;
 
 public class RepeatDonorReporter {
     Map<String, Integer> minYearDonated; // key would be name+zipcode
+
     Map<String, RepeatDonorsGroup> repeatedDonorsGroups; // key would be receiptID+ZipCode+Year
+    //Map<String, RepeatDonors> repeatedDonorsGroups; // key would be receiptID+ZipCode+Year
+
     PercentileCalculator percentileCalculator;
     float desiredPercentile;
 
@@ -33,10 +36,14 @@ public class RepeatDonorReporter {
             if(repeatedDonorsGroups.containsKey(receiptZipYear)){
 
                 repeatedDonorsGroups.get(receiptZipYear).addOrPut(theDonationRecord.getTransactionAmount());
+                //repeatedDonorsGroups.get(receiptZipYear).addAmount(theDonationRecord.getTransactionAmount());
             }else{
 
                 RepeatDonorsGroup newGroup = new RepeatDonorsGroup();
                 newGroup.addOrPut(theDonationRecord.getTransactionAmount());
+
+                /*RepeatDonors newGroup = new RepeatDonors(desiredPercentile);
+                newGroup.addAmount(theDonationRecord.getTransactionAmount());*/
                 repeatedDonorsGroups.put(receiptZipYear, newGroup);
             }
 
@@ -57,16 +64,19 @@ public class RepeatDonorReporter {
                 String.valueOf(donationRecord.getTransactionYear());
 
         RepeatDonorsGroup repeatedList = repeatedDonorsGroups.get(receiptZipYear);
+        //RepeatDonors repeatedList = repeatedDonorsGroups.get(receiptZipYear);
 
-        int indexForSorted = percentileCalculator.calcPercentile(desiredPercentile, repeatedList.amounts.size());
-        long thePercentile = generateRoundedAmount(repeatedList.amounts.get(indexForSorted-1));
+        int indexForSorted = percentileCalculator.calcPercentile(desiredPercentile, repeatedList.getSize());
+
+        long thePercentile = generateRoundedAmount(repeatedList.getPercentile(indexForSorted));
+        //long thePercentile = generateRoundedAmount(repeatedList.getPercentile());
 
         return donationRecord.getReceiptID() + "|" +
                 donationRecord.getZipcode() + "|" +
                 donationRecord.getTransactionYear() + "|" +
                 thePercentile + "|" +
-                generateRoundedAmount(repeatedList.total) + "|" +
-                repeatedList.amounts.size() + "\n";
+                generateRoundedAmount(repeatedList.getTotal()) + "|" +
+                repeatedList.getSize() + "\n";
     }
 
     public long generateRoundedAmount(Float amount){

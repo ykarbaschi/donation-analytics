@@ -53,7 +53,7 @@ public class RepeatDonorReporterTest {
                 String.valueOf(donationRecord4.getTransactionYear());
 
         assertEquals(true, repeatDonorReporter.repeatedDonorsGroups.containsKey(key));
-        assertEquals(2, repeatDonorReporter.repeatedDonorsGroups.get(key).amounts.size());
+        assertEquals(2, repeatDonorReporter.repeatedDonorsGroups.get(key).getSize());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class RepeatDonorReporterTest {
                 String.valueOf(donationRecord2.getTransactionYear());
 
         assertEquals(true, repeatDonorReporter.repeatedDonorsGroups.containsKey(key));
-        assertEquals(50, repeatDonorReporter.repeatedDonorsGroups.get(key).total, 0.009);
+        assertEquals(50, repeatDonorReporter.repeatedDonorsGroups.get(key).getTotal(), 0.009);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class RepeatDonorReporterTest {
                 donationRecord2.getZipcode() +
                 String.valueOf(donationRecord2.getTransactionYear());
 
-        float total = repeatDonorReporter.repeatedDonorsGroups.get(key).total;
+        float total = repeatDonorReporter.repeatedDonorsGroups.get(key).getTotal();
 
         assertEquals(200, total, 0.009f);
     }

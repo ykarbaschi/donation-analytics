@@ -12,6 +12,6 @@ public class RepeatDonorsGroupTest {
     @Test
     public void addValueToEmptyList() {
         repeatDonorsGroup.addOrPut(99.45f);
-        assertEquals(99.45, repeatDonorsGroup.amounts.get(0), 0.009f);
+        assertEquals(99.45, repeatDonorsGroup.getPercentile(0), 0.009f);
     }
 }
